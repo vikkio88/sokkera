@@ -2,13 +2,13 @@
   import { SIDES } from "../const/teams";
 
   export let number = 0;
-  export let side = SIDES.AWAY;
+  export let team = SIDES.AWAY;
 </script>
 
 <button
   class="no-button player"
-  class:home={side === SIDES.HOME}
-  class:away={side === SIDES.AWAY}
+  class:home={team === SIDES.HOME}
+  class:away={team === SIDES.AWAY}
 >
   {number}
 </button>
@@ -27,6 +27,9 @@
     font-weight: bold;
     font-size: 1.2rem;
     box-shadow: 2px 2px black;
+
+    align-self: center;
+    justify-self: center;
   }
 
   .away {

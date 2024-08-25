@@ -1,62 +1,63 @@
 <script>
   import { SIDES } from "../const/teams";
+  import EmptyTile from "./EmptyTile.svelte";
   import Player from "./Player.svelte";
 
-  const slots = [
-    { players: [{ number: 9, side: SIDES.HOME }] },
-    { players: [] },
-    { players: [] },
-    { players: [] },
-    { players: [] },
-    { players: [] },
-    { players: [] },
-    { players: [] },
-    { players: [] },
-    { players: [] },
-    { players: [] },
-    { players: [] },
-    {
-      players: [
-        { number: 10, side: SIDES.HOME },
-        { number: 4, side: SIDES.HOME },
-        { number: 2, side: SIDES.AWAY },
-      ],
-    },
-    { players: [
-      { number: 33, side: SIDES.AWAY },
-    ] },
-    { players: [
-      { number: 33, side: SIDES.HOME },
-    ] },
-    { players: [
-      { number: 22, side: SIDES.AWAY },
-    ] },
-    { players: [
-      { number: 11, side: SIDES.HOME },
-      { number: 21, side: SIDES.AWAY },
-    ] },
-    { players: [] },
-    {
-      players: [
-        { number: 8, side: SIDES.AWAY },
-        { number: 10, side: SIDES.AWAY },
-        { number: 9, side: SIDES.AWAY },
-      ],
-    },
-    { players: [] },
-    { players: [] },
-    { players: [] },
-    { players: [] },
-    { players: [] },
-    { players: [] },
+  function getRandomPlayer() {
+    return {
+      team: Math.random() < 0.5 ? SIDES.HOME : SIDES.AWAY,
+      number: Math.floor(Math.random() * 98) + 2,
+    };
+  }
+
+  const fieldRows = [
+    [
+      { players: [getRandomPlayer()] },
+      { players: [] },
+      { players: [] },
+      { players: [] },
+    ],
+    [{ players: [] }, { players: [] }, { players: [] }, { players: [] }],
+    [
+      { players: [getRandomPlayer(), getRandomPlayer()] },
+      { players: [] },
+      { players: [] },
+      { players: [] },
+    ],
+    [
+      { players: [getRandomPlayer(), getRandomPlayer()] },
+      { players: [] },
+      { players: [] },
+      { players: [] },
+    ],
+    [
+      { players: [getRandomPlayer()] },
+      { players: [] },
+      { players: [] },
+      { players: [] },
+    ],
+    [{ players: [] }, { players: [] }, { players: [] }, { players: [] }],
+    [{ players: [] }, { players: [] }, { players: [] }, { players: [] }],
+    [
+      { players: [getRandomPlayer(), getRandomPlayer(), getRandomPlayer()] },
+      { players: [] },
+      { players: [] },
+      { players: [] },
+    ],
   ];
 </script>
 
 <div class="field">
-  {#each slots as slot}
-    <div class="slot">
-      {#each slot.players as player}
-        <Player number={player.number} side={player.side} />
+  {#each fieldRows as row}
+    <div class="row">
+      {#each row as col}
+        <div class="slot">
+          {#each col.players as player}
+            <Player number={player.number} team={player.team} />
+          {:else}
+            <EmptyTile />
+          {/each}
+        </div>
       {/each}
     </div>
   {/each}
@@ -64,30 +65,32 @@
 
 <style>
   .field {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(4, 1fr);
-    column-gap: 0.1rem;
-    row-gap: 0.1rem;
-    padding-top: 1rem;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    display: flex;
+    flex-direction: column;
     min-height: 90vh;
-    background-color: white;
+    gap: 0.5rem;
   }
-
   @media (min-width: 1024px) {
     .field {
       max-width: 90%;
     }
   }
 
+  .field .row {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
   .slot {
+    padding: 1rem;
     background-color: #d0ffd6;
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 columns within each slot */
-    grid-template-rows: 1fr 1fr; /* 2 rows within each slot */
-    width: 100%;
-    height: 100%;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    row-gap: 0.2rem;
+    column-gap: 0.1rem;
+    flex: 1;
   }
 </style>
