@@ -1,11 +1,12 @@
-<script>
-  import { SIDES } from "../const/teams";
+<script lang="ts">
+  import { SIDES } from "../types/teams";
 
   export let number = 0;
-  export let team = SIDES.AWAY;
+  export let team: SIDES = SIDES.AWAY;
 </script>
 
 <button
+  on:click
   class="no-button player"
   class:home={team === SIDES.HOME}
   class:away={team === SIDES.AWAY}
@@ -15,9 +16,9 @@
 
 <style>
   .player {
-    padding: 1rem;    
-    margin: .1rem;
-    border-radius: .5rem;
+    padding: 1rem;
+    margin: 0.1rem;
+    border-radius: 0.5rem;
     height: 1rem;
     width: 1rem;
     display: flex;

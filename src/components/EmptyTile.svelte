@@ -1,7 +1,8 @@
-<script>
+<script lang="ts">
+  export let highlight: boolean = false;
 </script>
 
-<button class="no-button emptyTile"> </button>
+<button class="no-button emptyTile" class:highlight on:click> </button>
 
 <style>
   .emptyTile {
@@ -20,6 +21,12 @@
 
     align-self: center;
     justify-self: center;
+  }
+
+  .highlight {
+    border: solid 3px white;
+    background-color: orange;
+    opacity: 0.5;
   }
 
   @media (max-width: 767px) {
