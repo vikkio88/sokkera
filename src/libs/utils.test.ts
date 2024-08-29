@@ -1,33 +1,12 @@
 import { test, expect, describe } from "vitest";
-import { getAdjacentSlots, toCell, toChunkCell } from "./field";
-import type { Chunk, ChunkCell, Slot } from "../types/field";
+import {
+  c,
+  cc,
+  getAdjacentChunkCells,
+  toCell,
+  toChunkCell,
+} from "./fieldUtils";
 import { SIDES } from "../types/teams";
-
-// make a chunk
-const c = (
-  i: number,
-  j: number,
-  s = SIDES.HOME,
-  slots: Slot[] = []
-): Chunk => ({
-  i,
-  j,
-  side: s,
-  slots,
-});
-
-// make a slot
-const s = (
-  i: number,
-  j: number,
-  s: number,
-  side: SIDES = SIDES.HOME
-): ChunkCell => ({
-  i,
-  j,
-  slotIndex: s,
-  side,
-});
 
 describe("slots utils", () => {
   test("coordinates conversion Chunk & SlotIndex to Cell", () => {
@@ -184,19 +163,16 @@ describe("slots utils", () => {
     // top left
     let chunk = c(0, 0);
     // top left slot
-    expect(getAdjacentSlots(chunk, 0)).toEqual([
-      s(0, 0, 1),
-      s(0, 0, 2),
-      s(0, 0, 3),
-    ]);
+    let res = getAdjacentChunkCells(chunk, 0);
+    expect(res).toEqual([cc(0, 0, 1), cc(0, 0, 2), cc(0, 0, 3)]);
 
     // top right
     chunk = c(0, 3);
     // top right slot
-    expect(getAdjacentSlots(chunk, 1)).toEqual([
-      s(0, 3, 0),
-      s(0, 3, 2),
-      s(0, 3, 3),
+    expect(getAdjacentChunkCells(chunk, 1)).toEqual([
+      cc(0, 3, 0),
+      cc(0, 3, 2),
+      cc(0, 3, 3),
     ]);
   });
 });
