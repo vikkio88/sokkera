@@ -2,7 +2,13 @@
   export let highlight: boolean = false;
 </script>
 
-<button class="no-button emptyTile" class:highlight on:click> </button>
+<button
+  class="no-button emptyTile"
+  class:highlight
+  on:click
+  disabled={!highlight}
+>
+</button>
 
 <style>
   .emptyTile {
@@ -23,8 +29,11 @@
     justify-self: center;
   }
 
+  .emptyTile:disabled {
+    cursor: not-allowed;
+  }
+
   .highlight {
-    border: solid 3px white;
     background-color: orange;
     opacity: 0.5;
   }

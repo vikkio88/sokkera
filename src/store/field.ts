@@ -1,41 +1,29 @@
 import { writable } from "svelte/store";
-import { getRandomField } from "../libs/generators";
+import { getRandomField, info, resetFieldInfo } from "../libs/generators";
 import { SIDES } from "../types/teams";
-import {
-  type Chunk,
-} from "../types/field";
-
-type Config = {
-  [SIDES.HOME]: any;
-  [SIDES.AWAY]: any;
-};
-
-const emptyConfig = (): Config => ({
-  [SIDES.HOME]: {},
-  [SIDES.AWAY]: {},
-});
+import { type Chunk } from "../types/field";
+import { getAdjacentChunkCells } from "../libs/fieldUtils";
 
 const { subscribe, update } = writable({
   field: getRandomField(),
-  info: { highlighted: emptyConfig(), clickable: emptyConfig() },
   turn: SIDES.HOME,
 });
 
-export function isHighlighted(
-  config: Config,
-  chunk: Chunk,
-  index: number
-): boolean {
-  return config[chunk.side]?.[chunk.i]?.[chunk.j]?.[index];
+export function isHighlighted(chunk: Chunk, index: number): boolean {
+  return chunk.slots[index]?.info?.isHighlighted ?? false;
 }
 
 export default {
   subscribe,
   slotClick(chunk: Chunk, slotIndex: number) {
-    console.log({ chunk, slotIndex });
-    update((state) => ({
-      ...state,
-      info: { ...state.info, highlighted: emptyConfig() },
-    }));
+    const cC = getAdjacentChunkCells(chunk, slotIndex, 2);
+    update((state) => {
+      const newField = state.field;
+      resetFieldInfo(newField);
+      for (const c of cC) {
+        newField[c.side].rows[c.i][c.j].slots[c.slotIndex].info = info(true);
+      }
+      return { ...state, field: newField };
+    });
   },
 };

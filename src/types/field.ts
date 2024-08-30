@@ -24,6 +24,11 @@ export type Chunk = { side: SIDES; i: number; j: number; slots: Slot[] };
 export type Slot = {
   player?: Player;
   ball?: Ball;
+  info?: Info;
+};
+
+export type Info = {
+  isHighlighted: boolean;
 };
 
 export type ChunkCell = {

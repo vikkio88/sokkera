@@ -21,9 +21,7 @@
                 />
               {:else}
                 <EmptyTile
-                  on:click={() => gameState.slotClick(chunk, slotIndex)}
                   highlight={isHighlighted(
-                    $gameState.info.highlighted,
                     chunk,
                     slotIndex
                   )}

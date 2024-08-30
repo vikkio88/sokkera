@@ -11,7 +11,7 @@ import {
 } from "../types/field";
 
 // make a chunk
-export const c = (
+export const ck = (
   i: number,
   j: number,
   s = SIDES.HOME,
@@ -36,34 +36,47 @@ export const cc = (
   side,
 });
 
+// make a cell
+export const c = (i: number, j: number): Cell => ({ i, j });
+
 export function getAdjacentChunkCells(
   chunk: Chunk,
   slotIndex: number,
   distance: number = 1
 ): ChunkCell[] {
-  const n = CHUNK_BORDER_SIZE * FIELD_SIDE_SIZE;
-  const m = FIELD_CHUNKS_SIZE;
+  return getAdjacentCells(toCell(chunk, slotIndex), distance).map(toChunkCell);
+}
 
-  const result: ChunkCell[] = [];
-  const { i, j } = toCell(chunk, slotIndex);
+export function getAdjacentCells(cell: Cell, distance: number = 1): Cell[] {
+  const { i, j } = cell;
+  const rows = FIELD_CHUNKS_SIZE;
+  const cols = CHUNK_BORDER_SIZE * FIELD_SIDE_SIZE;
+  const cells: Cell[] = [];
+
+  if (i < 0 || j < 0 || i > rows || j > cols) {
+    return cells;
+  }
 
   for (let di = -distance; di <= distance; di++) {
     for (let dj = -distance; dj <= distance; dj++) {
-      if (Math.abs(di) <= distance && Math.abs(dj) <= distance) {
-        const newI = i + di;
-        const newJ = j + dj;
-        if (isValidPos(newI, newJ, n, m) && !(newI === i && newJ === j)) {
-          result.push(toChunkCell({ i: newI, j: newJ }));
-        }
+      const ni = i + di;
+      const nj = j + dj;
+
+      // Ensure the new coordinates are within the bounds of the matrix
+      if (
+        ni >= 0 &&
+        ni < rows &&
+        nj >= 0 &&
+        nj < cols &&
+        // make sure itself is not a point
+        !(nj === j && ni === i)
+      ) {
+        cells.push({ i: ni, j: nj });
       }
     }
   }
 
-  return result;
-}
-
-function isValidPos(i: number, j: number, n: number, m: number): boolean {
-  return i >= 0 && j >= 0 && i < n && j < m;
+  return cells;
 }
 
 const SLOT_INDEX_MAP = [
