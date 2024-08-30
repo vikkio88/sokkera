@@ -122,3 +122,12 @@ export function toChunkCell(cell: Cell): ChunkCell {
     slotIndex: slotIndex >= 0 ? slotIndex : 0,
   };
 }
+
+export function isSameCellChunk(a: ChunkCell | null, b: ChunkCell): boolean {
+  if (!a) {
+    return false;
+  }
+  const { i, j, slotIndex, side } = a;
+
+  return b.i === i && b.j === j && b.slotIndex === slotIndex && b.side == side;
+}
