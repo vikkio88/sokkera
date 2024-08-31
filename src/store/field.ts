@@ -21,12 +21,17 @@ export function isHighlighted(chunk: Chunk, index: number): boolean {
 
 export default {
   subscribe,
+  changeTurn() {
+    update((state) => {
+      state.turn = state.turn === SIDES.AWAY ? SIDES.HOME : SIDES.AWAY;
+      return state;
+    });
+  },
   slotClick(chunk: Chunk, slotIndex: number) {
     const cellChunk = cc(chunk.i, chunk.j, slotIndex, chunk.side);
     const cC = getAdjacentChunkCells(chunk, slotIndex, 2);
     update((state) => {
       const clickedSelected = isSameCellChunk(state.selected, cellChunk);
-      console.log({ cellChunk, sel: state.selected });
       const newField = state.field;
       resetFieldInfo(newField);
       if (!clickedSelected) {

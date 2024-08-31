@@ -1,6 +1,7 @@
 <script lang="ts">
   import { SIDES } from "../types/teams";
 
+  export let disabled: boolean = false;
   export let number = 0;
   export let team: SIDES = SIDES.AWAY;
 </script>
@@ -10,6 +11,7 @@
   class="no-button player"
   class:home={team === SIDES.HOME}
   class:away={team === SIDES.AWAY}
+  {disabled}
 >
   {number}
 </button>
@@ -34,6 +36,7 @@
   }
 
   .away {
+    color: white;
     background: repeating-linear-gradient(
       90deg,
       #92140c,
@@ -53,6 +56,10 @@
       black 10px,
       black 20px
     );
+  }
+
+  .player:disabled {
+    cursor: not-allowed;
   }
 
   @media (max-width: 767px) {

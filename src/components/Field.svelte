@@ -17,15 +17,11 @@
                 <Player
                   on:click={() => gameState.slotClick(chunk, slotIndex)}
                   number={slot.player.number}
+                  disabled={$gameState.turn !== slot.player.team}
                   team={slot.player.team}
                 />
               {:else}
-                <EmptyTile
-                  highlight={isHighlighted(
-                    chunk,
-                    slotIndex
-                  )}
-                />
+                <EmptyTile highlight={isHighlighted(chunk, slotIndex)} />
               {/if}
             {/each}
           </div>
@@ -41,11 +37,6 @@
     flex-direction: column;
     min-height: 90vh;
     gap: 0.1rem;
-  }
-  @media (min-width: 1024px) {
-    .field {
-      max-width: 90%;
-    }
   }
 
   .field .row {
