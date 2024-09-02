@@ -14,14 +14,18 @@
           <div class="chunk">
             {#each chunk.slots as slot, slotIndex}
               {#if slot.player}
+              <!-- Add way to hide if not in turn -->
                 <Player
-                  on:click={() => gameState.slotClick(chunk, slotIndex)}
+                  on:click={() => gameState.onPlayerSlotClick(chunk, slotIndex)}
                   number={slot.player.number}
                   disabled={$gameState.turn !== slot.player.team}
                   team={slot.player.team}
                 />
               {:else}
-                <EmptyTile highlight={isHighlighted(chunk, slotIndex)} />
+                <EmptyTile
+                  highlight={isHighlighted(chunk, slotIndex)}
+                  on:click={() => gameState.onSlotClick(chunk, slotIndex)}
+                />
               {/if}
             {/each}
           </div>

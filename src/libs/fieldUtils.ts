@@ -23,7 +23,9 @@ export const ck = (
   slots,
 });
 
-// make a chunkCell
+/**
+ * Create a ChunkCell from i,j,slotIndex and Side
+ */
 export const cc = (
   i: number,
   j: number,
@@ -34,6 +36,16 @@ export const cc = (
   j,
   slotIndex: s,
   side,
+});
+
+/**
+ * Create ChunkCell from chunk and slotIndex
+ */
+export const ccc = (c: Chunk, slotIndex: number): ChunkCell => ({
+  i: c.i,
+  j: c.j,
+  slotIndex,
+  side: c.side,
 });
 
 // make a cell

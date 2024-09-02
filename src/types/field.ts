@@ -1,4 +1,4 @@
-import type { Player, SIDES } from "./teams";
+import { SIDES, type Player } from "./teams";
 
 export type Ball = {
   stopped: boolean;
@@ -10,10 +10,10 @@ export const CHUNK_BORDER_SIZE = CHUNK_SLOTS_SIZE / 2;
 export const HALF_FIELD_CHUNKS_SIZE = CHUNK_BORDER_SIZE * FIELD_SIDE_SIZE;
 export const FIELD_CHUNKS_SIZE = HALF_FIELD_CHUNKS_SIZE * 2;
 
-export type Field = {
+export interface Field {
   [SIDES.HOME]: FieldHalf;
   [SIDES.AWAY]: FieldHalf;
-};
+}
 
 export type FieldHalf = {
   rows: Chunk[][];

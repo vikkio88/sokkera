@@ -1,8 +1,13 @@
 import { writable } from "svelte/store";
-import { getRandomField, info, resetFieldInfo } from "../libs/generators";
+import { getRandomField, info, FieldManager } from "../libs/generators";
 import { SIDES } from "../types/teams";
 import { type Chunk, type ChunkCell, type Field } from "../types/field";
-import { cc, getAdjacentChunkCells, isSameCellChunk } from "../libs/fieldUtils";
+import {
+  cc,
+  ccc,
+  getAdjacentChunkCells,
+  isSameCellChunk,
+} from "../libs/fieldUtils";
 type FieldState = {
   field: Field;
   selected: ChunkCell | null;
@@ -27,23 +32,55 @@ export default {
       return state;
     });
   },
-  slotClick(chunk: Chunk, slotIndex: number) {
+  onPlayerSlotClick(chunk: Chunk, slotIndex: number) {
     const cellChunk = cc(chunk.i, chunk.j, slotIndex, chunk.side);
     const cC = getAdjacentChunkCells(chunk, slotIndex, 2);
     update((state) => {
       const clickedSelected = isSameCellChunk(state.selected, cellChunk);
-      const newField = state.field;
-      resetFieldInfo(newField);
+      const fieldMgr = new FieldManager(state.field);
+      fieldMgr.resetInfo();
       if (!clickedSelected) {
         for (const c of cC) {
-          newField[c.side].rows[c.i][c.j].slots[c.slotIndex].info = info(true);
+          fieldMgr.setSlotInfo(c, info(true));
         }
       }
 
       return {
         ...state,
-        field: newField,
+        field: fieldMgr.toField(),
         selected: clickedSelected ? null : cellChunk,
+      };
+    });
+  },
+  onSlotClick(chunk: Chunk, slotIndex: number) {
+    update((state) => {
+      if (!state.selected) {
+        return state;
+      }
+
+      const fieldMgr = new FieldManager(state.field);
+      console.log(`clicked on`, {
+        cc: ccc(chunk, slotIndex),
+        selected: state.selected,
+      });
+
+      const slotOrigin = fieldMgr.getSlot(state.selected);
+
+      if (!slotOrigin.player) {
+        return state;
+      }
+
+      fieldMgr.movePlayer(
+        state.selected,
+        ccc(chunk, slotIndex)
+      )
+      fieldMgr.resetInfo();
+
+      return {
+        ...state,
+        field: fieldMgr.toField(),
+        selected: null,
+        turn: state.turn === SIDES.AWAY ? SIDES.HOME : SIDES.AWAY,
       };
     });
   },
