@@ -23,7 +23,7 @@
     justify-content: center;
     font-weight: bold;
     font-size: 1.2rem;
-    background: transparent;
+    background-color: var(--field-bg-color2);
 
     align-self: center;
     justify-self: center;

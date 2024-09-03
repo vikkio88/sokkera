@@ -11,6 +11,8 @@ import {
 import { SIDES, type Player } from "../types/teams";
 import { maybe } from "./random";
 
+const range = Array.from({ length: FIELD_SIDE_SIZE });
+
 function getRandomPlayer() {
   return {
     team: Math.random() < 0.5 ? SIDES.HOME : SIDES.AWAY,
@@ -22,29 +24,31 @@ export function info(isHighlighted: boolean = false): Info {
   return { isHighlighted };
 }
 
-export function getRandomField(): Field {
-  const r = Array.from({ length: FIELD_SIDE_SIZE });
+export function getEmptyField(): Field {
   return {
     [SIDES.HOME]: {
-      rows: r.map((_, i) => r.map((_, j) => getRandomChunk(i, j, SIDES.HOME))),
+      rows: range.map((_, i) =>
+        range.map((_, j) => getEmptyChunk(i, j, SIDES.HOME))
+      ),
     },
     [SIDES.AWAY]: {
-      rows: r.map((_, i) => r.map((_, j) => getRandomChunk(i, j, SIDES.AWAY))),
+      rows: range.map((_, i) =>
+        range.map((_, j) => getEmptyChunk(i, j, SIDES.AWAY))
+      ),
     },
   };
 }
-function getRandomChunk(i: number, j: number, side: SIDES): Chunk {
+function getEmptyChunk(i: number, j: number, side: SIDES): Chunk {
   return {
     side: side,
     i,
     j,
-    slots: [
-      { player: maybe(0.1) ? getRandomPlayer() : undefined, info: info() },
-      { player: maybe(0.1) ? getRandomPlayer() : undefined, info: info() },
-      { player: maybe(0.1) ? getRandomPlayer() : undefined, info: info() },
-      { player: maybe(0.1) ? getRandomPlayer() : undefined, info: info() },
-    ],
+    slots: [...getEmptySlots()],
   };
+}
+
+function getEmptySlots(): Slot[] {
+  return range.map((_) => ({ info: info() }));
 }
 
 export class FieldManager implements Field {
@@ -97,7 +101,6 @@ export class FieldManager implements Field {
     slot.ball = ball;
     this[c.side].rows[c.i][c.j].slots[c.slotIndex] = { ...slot };
   }
-
 
   toField(): Field {
     return {

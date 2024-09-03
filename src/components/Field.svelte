@@ -50,7 +50,7 @@
   }
 
   .chunk {
-    background-color: #d0ffd6;
+    background-color: var(--field-bg-color);
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;

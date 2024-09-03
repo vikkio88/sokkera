@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import { getRandomField, info, FieldManager } from "../libs/generators";
+import { getEmptyField, info, FieldManager } from "../libs/generators";
 import { SIDES, type Player } from "../types/teams";
 import { type Chunk, type ChunkCell, type Field } from "../types/field";
 import {
@@ -21,7 +21,7 @@ type FieldState = {
 };
 
 const { subscribe, update } = writable<FieldState>({
-  field: getRandomField(),
+  field: getEmptyField(),
   selected: null,
   turn: {
     side: SIDES.HOME,
