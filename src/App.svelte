@@ -1,14 +1,19 @@
 <script>
   import Field from "./components/Field.svelte";
-  import gameState from "./store/field";
+  import gameState, { Phase } from "./store/field";
   import { SIDES } from "./types/teams";
 </script>
 
 <main>
   <Field />
-  <button on:click={() => gameState.changeTurn()}>
-    Turn: {$gameState.turn.side === SIDES.HOME ? "Home" : "Away"}</button
-  >
+  {#if $gameState.phase == Phase.Selection}
+    <h2>Selection</h2>
+  {/if}
+  {#if $gameState.phase == Phase.Match}
+    <button on:click={() => gameState.changeTurn()}>
+      Turn: {$gameState.turn.side === SIDES.HOME ? "Home" : "Away"}</button
+    >
+  {/if}
 </main>
 
 <style>

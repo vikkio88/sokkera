@@ -14,13 +14,20 @@ type Turn = {
   movedPlayers: Player[];
 };
 
-type FieldState = {
+export enum Phase {
+  Selection,
+  Match,
+}
+
+type GameState = {
+  phase: Phase;
   field: Field;
   selected: ChunkCell | null;
   turn: Turn;
 };
 
-const { subscribe, update } = writable<FieldState>({
+const { subscribe, update } = writable<GameState>({
+  phase: Phase.Selection,
   field: getEmptyField(),
   selected: null,
   turn: {
