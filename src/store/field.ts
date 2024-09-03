@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 import { getRandomField, info, FieldManager } from "../libs/generators";
-import { SIDES } from "../types/teams";
+import { SIDES, type Player } from "../types/teams";
 import { type Chunk, type ChunkCell, type Field } from "../types/field";
 import {
   cc,
@@ -8,28 +8,63 @@ import {
   getAdjacentChunkCells,
   isSameCellChunk,
 } from "../libs/fieldUtils";
+
+type Turn = {
+  side: SIDES;
+  movedPlayers: Player[];
+};
+
 type FieldState = {
   field: Field;
   selected: ChunkCell | null;
-  turn: SIDES;
+  turn: Turn;
 };
 
 const { subscribe, update } = writable<FieldState>({
   field: getRandomField(),
   selected: null,
-  turn: SIDES.HOME,
+  turn: {
+    side: SIDES.HOME,
+    movedPlayers: [],
+  },
 });
 
 export function isHighlighted(chunk: Chunk, index: number): boolean {
   return chunk.slots[index]?.info?.isHighlighted ?? false;
 }
 
+export function canBeClicked(
+  chunk: Chunk,
+  slotIndex: number,
+  turn: Turn
+): boolean {
+  const slotPlayer = chunk.slots[slotIndex].player ?? null;
+  if (slotPlayer) {
+    return (
+      turn.side !== slotPlayer.team ||
+      turn.movedPlayers.some(
+        (p) => p.number === slotPlayer.number && slotPlayer.number === p.number
+      )
+    );
+  }
+
+  return true;
+}
+
 export default {
   subscribe,
   changeTurn() {
     update((state) => {
-      state.turn = state.turn === SIDES.AWAY ? SIDES.HOME : SIDES.AWAY;
-      return state;
+      const side = state.turn.side === SIDES.AWAY ? SIDES.HOME : SIDES.AWAY;
+      const movedPlayers: Player[] = [];
+      return {
+        ...state,
+        turn: {
+          ...state.turn,
+          side,
+          movedPlayers,
+        },
+      };
     });
   },
   onPlayerSlotClick(chunk: Chunk, slotIndex: number) {
@@ -70,17 +105,21 @@ export default {
         return state;
       }
 
-      fieldMgr.movePlayer(
-        state.selected,
-        ccc(chunk, slotIndex)
-      )
+      let movedPlayers = [...state.turn.movedPlayers];
+
+      movedPlayers = [...movedPlayers, slotOrigin.player];
+      fieldMgr.movePlayer(state.selected, ccc(chunk, slotIndex));
       fieldMgr.resetInfo();
 
       return {
         ...state,
         field: fieldMgr.toField(),
         selected: null,
-        turn: state.turn === SIDES.AWAY ? SIDES.HOME : SIDES.AWAY,
+        turn: {
+          ...state.turn,
+          // side: state.turn.side === SIDES.AWAY ? SIDES.HOME : SIDES.AWAY, // check if moved all the players
+          movedPlayers,
+        },
       };
     });
   },

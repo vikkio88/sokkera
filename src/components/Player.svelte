@@ -60,6 +60,7 @@
 
   .player:disabled {
     cursor: not-allowed;
+    opacity: .5;
   }
 
   @media (max-width: 767px) {

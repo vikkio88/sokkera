@@ -2,7 +2,7 @@
   import EmptyTile from "./EmptyTile.svelte";
   import Player from "./Player.svelte";
 
-  import gameState, { isHighlighted } from "../store/field";
+  import gameState, { canBeClicked, isHighlighted } from "../store/field";
   import { SIDES } from "../types/teams";
 </script>
 
@@ -14,11 +14,10 @@
           <div class="chunk">
             {#each chunk.slots as slot, slotIndex}
               {#if slot.player}
-              <!-- Add way to hide if not in turn -->
                 <Player
                   on:click={() => gameState.onPlayerSlotClick(chunk, slotIndex)}
                   number={slot.player.number}
-                  disabled={$gameState.turn !== slot.player.team}
+                  disabled={canBeClicked(chunk, slotIndex, $gameState.turn)}
                   team={slot.player.team}
                 />
               {:else}
