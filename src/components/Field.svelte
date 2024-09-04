@@ -36,6 +36,7 @@
 
 <style>
   .field {
+    flex: 6;
     display: flex;
     flex-direction: column;
     min-height: 90vh;
